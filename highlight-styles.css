@@ -1007,10 +1007,26 @@ p {
 }
 .swiper-wrapper {
   overflow: visible !important;
-  transition: transform 0.3s ease;
 }
 .swiper-slide {
   transition: opacity 0.3s ease, transform 0.3s ease;
+}
+/* Prevent visual reset during reordering */
+.swiper-container.is-reordering .swiper-slide .slider-image {
+  filter: grayscale(0%) blur(0px) !important;
+  opacity: 1 !important;
+}
+.swiper-container.is-reordering .swiper-slide .swiper-card-overlay {
+  opacity: 1 !important;
+}
+.swiper-container.is-reordering .swiper-slide .slider-score,
+.swiper-container.is-reordering .swiper-slide .slider-region,
+.swiper-container.is-reordering .swiper-slide .slider-state-tag,
+.swiper-container.is-reordering .swiper-slide .slider-population {
+  opacity: 1 !important;
+}
+.swiper-container.is-reordering .swiper-slide::before {
+  opacity: 0 !important;
 }
 .swiper-container {
   cursor: grab;
