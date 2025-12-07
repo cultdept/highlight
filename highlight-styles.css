@@ -1007,6 +1007,10 @@ p {
 }
 .swiper-wrapper {
   overflow: visible !important;
+  transition: transform 0.3s ease;
+}
+.swiper-slide {
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
 .swiper-container {
   cursor: grab;
