@@ -1023,21 +1023,6 @@ p {
 .swiper-slide-active .swiper-card {
   cursor: pointer;
 }
-/* Hover effect: scale content elements, not the card itself */
-.swiper-slide-active .swiper-card:hover .slider-score {
-  transform: scale(1.08);
-  transition: transform 0.2s ease;
-}
-.swiper-slide-active .swiper-card:hover .swiper-card-overlay {
-  transform: scale(1.02);
-  transition: transform 0.2s ease;
-}
-.swiper-slide-active .swiper-card:hover .slider-region,
-.swiper-slide-active .swiper-card:hover .slider-state-tag,
-.swiper-slide-active .swiper-card:hover .slider-population {
-  transform: scale(1.08);
-  transition: transform 0.2s ease;
-}
 .swiper-slide:not(.swiper-slide-active) .swiper-card {
   cursor: grab;
   pointer-events: none;
