@@ -20,6 +20,10 @@
   cursor: pointer;
 }
 /* ======================================================
+   ENGINE PILL â€” ACTIVE STATE + HIGHLIGHT
+   ====================================================== */
+/* Removed - now handled in drawer section with background fill */
+/* ======================================================
    DOT SEPARATORS
    ====================================================== */
 .pills-container {
@@ -29,7 +33,7 @@
   align-items: center;
 }
 .pills-container > .engine-pill:not(:last-child)::after {
-  content: "•";
+  content: "â€¢";
   position: absolute;
   right: -14px;
   top: 50%;
@@ -57,7 +61,7 @@
   z-index: -1;
 }
 /* ======================================================
-   ENGINE CARDS — ACTIVE VS INACTIVE
+   ENGINE CARDS â€” ACTIVE VS INACTIVE
    ====================================================== */
 .engine-card .engine-card-image-img {
   filter: grayscale(100%);
@@ -212,6 +216,8 @@ p {
 .swiper-slide.has-criteria.swiper-slide-active .slider-score {
   opacity: 1;
 }
+
+/* Region tag - mirrors score positioning on left side */
 .slider-region,
 .slider-state-tag,
 .slider-population {
@@ -265,6 +271,7 @@ p {
 .swiper-card .slider-description {
   display: none;
 }
+/* Active slide description */
 .engine-active-slide-description {
   text-align: left;
   margin-top: 16px;
@@ -330,16 +337,17 @@ p {
   z-index: 1000;
   transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   max-height: 80px;
-  overflow: visible;
+  overflow: visible; /* Allow chevron to escape */
   cursor: pointer;
 }
 .engine-criteria-drawer.is-open {
   max-height: 400px;
   cursor: default;
 }
+
 .engine-criteria-drawer.is-open .engine-criteria-boxes {
   overflow-y: auto;
-  max-height: 376px;
+  max-height: 376px; /* 400px - 24px padding */
 }
 .engine-criteria-drawer:not(.is-open):hover {
   background: #f9f9f9;
@@ -415,10 +423,14 @@ p {
 }
 .engine-criteria-boxes {
   padding: 24px;
+  /* Grid set in Webflow: display:grid, 6 columns, gap */
 }
+
 .engine-category {
+  /* Flex column set in Webflow */
   padding: 0 !important;
 }
+
 .engine-category-header {
   font-size: 13px;
   font-weight: 600;
@@ -437,6 +449,7 @@ p {
   align-items: center;
   gap: 8px;
 }
+
 .engine-category-header-text {
   white-space: nowrap;
   font-size: 13px;
@@ -474,8 +487,10 @@ p {
 .engine-criteria-drawer:not(.is-open) .engine-category-body {
   opacity: 0;
   pointer-events: none;
+  /* Delay the fade out by 0.5s so drawer closes first */
   transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1) 0.5s;
 }
+/* Pill activation animation */
 .engine-pill {
   cursor: pointer;
   transition: transform 0.2s ease, border-color 0.2s ease;
@@ -513,8 +528,9 @@ p {
   50% { transform: scale(1.08); }
   100% { transform: scale(1); }
 }
+
 /* ======================================================
-   PRESET BUTTONS
+   PRESET BUTTONS - UPDATED TO MATCH MODAL CLOSE
    ====================================================== */
 .engine-preset-button {
   color: #999;
@@ -559,6 +575,7 @@ p {
   background: #e5d100;
   border-color: #e5d100;
 }
+
 /* ======================================================
    TOOLTIPS
    ====================================================== */
@@ -614,12 +631,16 @@ p {
 .engine-preset-button[data-tooltip]:not(:hover)::before {
   transition-delay: 0s;
 }
+
 /* ======================================================
-   SWIPER ARROW BUTTONS
+   SWIPER ARROW BUTTONS - UPDATED TO MATCH MODAL CLOSE
+   ====================================================== */
+/* ======================================================
+   SWIPER ARROW BUTTONS - UPDATED TO MATCH MODAL CLOSE
    ====================================================== */
 .swiper-button-next,
 .swiper-button-prev {
-  z-index: 10000;
+  z-index: 10000; /* Above modal overlay */
   color: #333 !important;
   cursor: pointer;
   background: #f5e104 !important;
@@ -774,6 +795,7 @@ p {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   flex-shrink: 0;
 }
+
 .modal-city-name,
 .modal-state-name {
   font-family: 'Playfair Display', serif;
@@ -785,7 +807,7 @@ p {
 .modal-city-name {
   font-size: 40px;
   padding-top: 40px;
-  padding-right: 120px;
+  padding-right: 120px; /* Make room for score */
 }
 .modal-state-name {
   font-size: 20px;
@@ -887,7 +909,7 @@ p {
   color: #333;
 }
 .modal-highlight-item::before {
-  content: "•";
+  content: "â€¢";
   color: #f5e104;
   font-size: 18px;
   font-weight: 700;
@@ -1073,6 +1095,7 @@ p {
   width: 100%;
   height: 100%;
 }
+/* Custom Mapbox marker - score badge style */
 .map-marker {
   background: #f5e104;
   color: #333;
