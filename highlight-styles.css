@@ -212,14 +212,9 @@ p {
 .swiper-slide.has-criteria.swiper-slide-active .slider-score {
   opacity: 1;
 }
-/* State flag - top of left stack */
+/* State flag - hidden for now */
 .slider-state-flag-wrapper {
-  position: absolute;
-  left: 20px;
-  top: 20px;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  z-index: 10;
+  display: none;
 }
 .slider-state-flag {
   width: 96px;
@@ -253,13 +248,13 @@ p {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 .slider-region {
-  top: 120px;
+  top: 54px;
 }
 .slider-state-tag {
-  display: none; /* Hidden - using flag instead */
+  top: 20px;
 }
 .slider-population {
-  top: 148px;
+  top: 88px;
 }
 .swiper-slide.has-criteria.swiper-slide-active .slider-region,
 .swiper-slide.has-criteria.swiper-slide-active .slider-state-tag,
