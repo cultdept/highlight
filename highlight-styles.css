@@ -212,6 +212,26 @@ p {
 .swiper-slide.has-criteria.swiper-slide-active .slider-score {
   opacity: 1;
 }
+/* State flag - top of left stack */
+.slider-state-flag-wrapper {
+  position: absolute;
+  left: 20px;
+  top: 20px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 10;
+}
+.slider-state-flag {
+  width: 48px;
+  height: 48px;
+  border-radius: 6px;
+  object-fit: cover;
+  display: block;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+.swiper-slide.has-criteria.swiper-slide-active .slider-state-flag-wrapper {
+  opacity: 1;
+}
 .slider-region,
 .slider-state-tag,
 .slider-population {
@@ -234,13 +254,13 @@ p {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 .slider-region {
-  top: 20px;
+  top: 78px;
 }
 .slider-state-tag {
-  top: 54px;
+  display: none; /* Hidden - using flag instead */
 }
 .slider-population {
-  top: 88px;
+  top: 112px;
 }
 .swiper-slide.has-criteria.swiper-slide-active .slider-region,
 .swiper-slide.has-criteria.swiper-slide-active .slider-state-tag,
