@@ -85,8 +85,16 @@ function initScrollSnap() {
   // Listen for scroll events
   container.addEventListener('scroll', debounce(updateActiveSlide, 50));
   
-  // Initial check
+  // Make updateActiveSlide available globally for other functions
+  window.updateActiveSlide = updateActiveSlide;
+  
+  // Initial check - run multiple times to catch after images load
   setTimeout(updateActiveSlide, 100);
+  setTimeout(updateActiveSlide, 500);
+  setTimeout(updateActiveSlide, 1000);
+  
+  // Also run when all images are loaded
+  window.addEventListener('load', updateActiveSlide);
 }
 
 function debounce(func, wait) {
