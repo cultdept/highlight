@@ -1,0 +1,1239 @@
+<link href="https://cdn.jsdelivr.net/gh/cultdept/highlight@main/highlight-styles-v3.css" rel="stylesheet">
+
+<script defer src="https://api.mapbox.com/mapbox-gl-js/v3.4.0/mapbox-gl.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/Flip.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+<script>
+/* ======================================================
+   CORE UTILITIES
+   ====================================================== */
+// Use window properties for global filter state (consistent access)
+window.activeRegion = null;
+window.activeState = null;
+window.activePopulation = null;
+
+function slugToJSONKey(slug) {
+  // Handle special cases
+  if (slug === 'lgbtq-inclusion') return 'LGBTQInclusion';
+  
+  return slug
+    .split('-')
+    .map(part => part ? part.charAt(0).toUpperCase() + part.slice(1) : '')
+    .join('');
+}
+
+function groupCriteriaIntoCategories() {
+  const categories = document.querySelectorAll('.engine-category');
+  const pills = document.querySelectorAll('.engine-pill');
+  if (!categories.length || !pills.length) return;
+
+  const categoryMap = {};
+  categories.forEach(cat => {
+    const slug = cat.getAttribute('data-category');
+    const body = cat.querySelector('.engine-category-body');
+    if (slug && body) categoryMap[slug] = body;
+  });
+
+  pills.forEach(pill => {
+    const catSlug = pill.getAttribute('data-category');
+    const target = categoryMap[catSlug];
+    if (target) target.appendChild(pill);
+  });
+}
+
+function sortCriteriaInsideCategories() {
+  document.querySelectorAll('.engine-category').forEach(cat => {
+    const body = cat.querySelector('.engine-category-body');
+    if (!body) return;
+
+    const pills = Array.from(body.children);
+    pills.sort((a, b) => {
+      return (parseInt(a.getAttribute('data-order')) || 0) -
+             (parseInt(b.getAttribute('data-order')) || 0);
+    });
+    pills.forEach(p => body.appendChild(p));
+  });
+}
+
+/* ======================================================
+   COLLAPSIBLE CATEGORIES
+   ====================================================== */
+function setupCollapsibleCategories() {
+  document.querySelectorAll('.engine-category').forEach(cat => {
+    const header = cat.querySelector('.engine-category-header');
+    const body = cat.querySelector('.engine-category-body');
+    
+    if (!header || !body) return;
+
+    const activeCount = document.createElement('span');
+    activeCount.className = 'category-active-count';
+    activeCount.textContent = '0';
+    
+    const headerLeft = document.createElement('div');
+    headerLeft.className = 'category-header-left';
+    
+    const headerText = document.createElement('div');
+    headerText.className = 'engine-category-header-text';
+    headerText.innerHTML = header.innerHTML;
+    
+    headerLeft.appendChild(headerText);
+    headerLeft.appendChild(activeCount);
+    
+    header.innerHTML = '';
+    header.appendChild(headerLeft);
+  });
+}
+
+function updateCategoryCount(category) {
+  const body = category.querySelector('.engine-category-body');
+  const activeCountEl = category.querySelector('.category-active-count');
+  
+  if (!body || !activeCountEl) return;
+
+  const activePills = body.querySelectorAll('.engine-pill.is-active');
+  const count = activePills.length;
+
+  activeCountEl.textContent = count;
+  
+  if (count > 0) {
+    activeCountEl.classList.add('has-active');
+  } else {
+    activeCountEl.classList.remove('has-active');
+  }
+}
+
+function updateAllCategoryCounts() {
+  document.querySelectorAll('.engine-category').forEach(cat => {
+    updateCategoryCount(cat);
+  });
+}
+
+/* ======================================================
+   CRITERIA DRAWER WITH SMART AUTO-CLOSE
+   ====================================================== */
+let drawerAutoCloseTimer = null;
+let drawerOpenedByUser = false;
+
+function setupCriteriaDrawer() {
+  const drawer = document.querySelector('.engine-criteria-drawer');
+  if (!drawer) return;
+
+  // Create clear all button
+  const clearAllBtn = document.createElement('div');
+  clearAllBtn.className = 'drawer-clear-all';
+  clearAllBtn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg>';
+  drawer.appendChild(clearAllBtn);
+
+  // Create toggle icon
+  const toggleIcon = document.createElement('div');
+  toggleIcon.className = 'drawer-toggle-icon';
+  toggleIcon.innerHTML = '<svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>';
+  
+  drawer.appendChild(toggleIcon);
+
+  // Clear all functionality
+  clearAllBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    clearAllFilters();
+  });
+
+  // User manually toggles drawer
+  toggleIcon.addEventListener('click', (e) => {
+    e.stopPropagation();
+    drawer.classList.toggle('is-open');
+    drawerOpenedByUser = drawer.classList.contains('is-open');
+    clearAutoCloseTimer();
+  });
+  
+  // User clicks drawer to open
+  drawer.addEventListener('click', (e) => {
+    if (!drawer.classList.contains('is-open') && !e.target.closest('.drawer-toggle-icon')) {
+      drawer.classList.add('is-open');
+      drawerOpenedByUser = true;
+      clearAutoCloseTimer();
+    }
+  });
+
+  // Track mouse over drawer and presets for auto-close logic
+  let isOverDrawer = false;
+  let isOverPresets = false;
+
+  drawer.addEventListener('mouseenter', () => {
+    isOverDrawer = true;
+    clearAutoCloseTimer();
+  });
+
+  drawer.addEventListener('mouseleave', () => {
+    isOverDrawer = false;
+    if (!drawerOpenedByUser && !isOverPresets) {
+      startAutoCloseTimer();
+    }
+  });
+
+  const presetsContainer = document.querySelector('.engine-presets');
+  if (presetsContainer) {
+    presetsContainer.addEventListener('mouseenter', () => {
+      isOverPresets = true;
+      clearAutoCloseTimer();
+    });
+
+    presetsContainer.addEventListener('mouseleave', () => {
+      isOverPresets = false;
+      if (!drawerOpenedByUser && !isOverDrawer) {
+        startAutoCloseTimer();
+      }
+    });
+  }
+}
+
+function clearAutoCloseTimer() {
+  if (drawerAutoCloseTimer) {
+    clearTimeout(drawerAutoCloseTimer);
+    drawerAutoCloseTimer = null;
+  }
+}
+
+function startAutoCloseTimer() {
+  clearAutoCloseTimer();
+  drawerAutoCloseTimer = setTimeout(() => {
+    const drawer = document.querySelector('.engine-criteria-drawer');
+    if (drawer && !drawerOpenedByUser) {
+      drawer.classList.remove('is-open');
+    }
+  }, 3500);
+}
+
+function openCriteriaDrawer() {
+  const drawer = document.querySelector('.engine-criteria-drawer');
+  if (drawer) {
+    drawer.classList.add('is-open');
+    drawerOpenedByUser = false; // Opened by system (preset click)
+    startAutoCloseTimer(); // Auto-close after 3.5 seconds
+  }
+}
+
+function clearAllFilters() {
+  // Clear all active pills
+  document.querySelectorAll('.engine-pill.is-active')
+    .forEach(p => p.classList.remove('is-active'));
+  
+  // Clear all active presets
+  document.querySelectorAll('.engine-preset-button.is-active')
+    .forEach(p => p.classList.remove('is-active'));
+  
+  // Clear region/state/population filters
+  window.activeRegion = null;
+  window.activeState = null;
+  window.activePopulation = null;
+  
+  // Remove active styling from filter tags
+  document.querySelectorAll('.slider-region.is-active, .slider-state-tag.is-active, .slider-population.is-active')
+    .forEach(tag => tag.classList.remove('is-active'));
+  
+  // Resort and update
+  sortSlidesAndReorder(true); // Force rebuild to restore all slides
+  updateClearAllButton();
+}
+
+function updateClearAllButton() {
+  const clearBtn = document.querySelector('.drawer-clear-all');
+  if (!clearBtn) return;
+  
+  const hasActiveFilters = 
+    document.querySelectorAll('.engine-pill.is-active').length > 0 ||
+    window.activeRegion ||
+    window.activeState ||
+    window.activePopulation;
+  
+  if (hasActiveFilters) {
+    clearBtn.classList.add('has-filters');
+  } else {
+    clearBtn.classList.remove('has-filters');
+  }
+}
+
+/* ======================================================
+   SCORING
+   ====================================================== */
+function scoreCard(criteriaNode, activeKeys) {
+  if (!activeKeys.length || !criteriaNode) return null;
+
+  let criteria;
+  try {
+    criteria = JSON.parse(criteriaNode.getAttribute('data-criteria'));
+  } catch {
+    return null;
+  }
+
+  const values = activeKeys
+    .map(key => criteria[key])
+    .filter(v => typeof v === "number");
+
+  if (!values.length) return null;
+
+  return Math.round(values.reduce((a,b)=>a+b,0) / values.length);
+}
+
+/* ======================================================
+   SORT & REORDER SLIDES
+   ====================================================== */
+function sortSlidesAndReorder(forceRebuild = false) {
+  const wrapper = document.querySelector('.swiper-wrapper');
+  const container = document.querySelector('.swiper-container');
+  if (!wrapper) return;
+
+  console.log('--- sortSlidesAndReorder ---');
+  console.log('Active Region:', window.activeRegion);
+  console.log('Active State:', window.activeState);
+  console.log('Active Population:', window.activePopulation);
+
+  // Get or create holding container for filtered-out slides
+  let holdingContainer = document.getElementById('swiper-holding');
+  if (!holdingContainer) {
+    holdingContainer = document.createElement('div');
+    holdingContainer.id = 'swiper-holding';
+    holdingContainer.style.display = 'none';
+    wrapper.parentElement.appendChild(holdingContainer);
+  }
+
+  // Destroy existing Swiper first
+  if (window.swiperInstance) {
+    window.swiperInstance.destroy(true, true);
+    window.swiperInstance = null;
+  }
+
+  // Move ALL slides back to wrapper (restore any previously filtered slides)
+  const heldSlides = Array.from(holdingContainer.querySelectorAll('.swiper-slide'));
+  console.log('Restoring', heldSlides.length, 'slides from holding');
+  heldSlides.forEach(slide => {
+    slide.style.display = '';
+    wrapper.appendChild(slide);
+  });
+
+  // Get active criteria
+  const pills = Array.from(document.querySelectorAll('.engine-pill.is-active'));
+  const activeKeys = pills.map(p => slugToJSONKey(p.getAttribute('data-key')));
+  const hasCriteria = activeKeys.length > 0;
+  const hasTagFilters = window.activeRegion || window.activeState || window.activePopulation;
+
+  console.log('Active criteria keys:', activeKeys);
+
+  // Get all real slides (no duplicates since we just destroyed Swiper)
+  const allSlides = Array.from(wrapper.querySelectorAll('.swiper-slide'));
+  console.log('Total slides in wrapper:', allSlides.length);
+
+  // Separate into visible and hidden based on filters
+  const visibleSlides = [];
+  const hiddenSlides = [];
+
+  allSlides.forEach((slide, index) => {
+    const dataNode = slide.querySelector('[data-criteria]');
+    const scoreBox = slide.querySelector('.slider-score');
+    const regionTag = slide.querySelector('.slider-region');
+    const stateTag = slide.querySelector('.slider-state-tag');
+    const popTag = slide.querySelector('.slider-population');
+    const cityName = slide.querySelector('.slider-text')?.textContent || `Slide ${index}`;
+
+    if (!dataNode || !scoreBox) {
+      console.log(`${cityName}: Missing dataNode or scoreBox, hiding`);
+      hiddenSlides.push(slide);
+      return;
+    }
+
+    // Check hard filters (tag filters)
+    const slideRegion = regionTag?.textContent?.trim() || '';
+    const slideState = stateTag?.textContent?.trim() || '';
+    const slidePop = popTag?.textContent?.trim() || '';
+
+    let matchesRegion = true;
+    if (window.activeRegion) {
+      matchesRegion = (slideRegion === window.activeRegion);
+    }
+
+    let matchesState = true;
+    if (window.activeState) {
+      matchesState = (slideState === window.activeState);
+    }
+
+    let matchesPopulation = true;
+    if (window.activePopulation) {
+      matchesPopulation = (slidePop === window.activePopulation);
+    }
+
+    const matchesAllFilters = matchesRegion && matchesState && matchesPopulation;
+
+    // Calculate score
+    const score = scoreCard(dataNode, activeKeys);
+    slide.dataset.currentScore = score == null ? 0 : score;
+    scoreBox.textContent = score == null ? "-" : score;
+
+    console.log(`${cityName}: Region="${slideRegion}" State="${slideState}" Pop="${slidePop}" Score=${score} Matches=${matchesAllFilters}`);
+
+    // Add/remove has-criteria class
+    if (hasCriteria || hasTagFilters) {
+      slide.classList.add('has-criteria');
+    } else {
+      slide.classList.remove('has-criteria');
+    }
+
+    // Hard filter: if doesn't match tag filters, move to holding
+    if (matchesAllFilters) {
+      visibleSlides.push(slide);
+    } else {
+      hiddenSlides.push(slide);
+    }
+  });
+
+  console.log('Visible slides:', visibleSlides.length);
+  console.log('Hidden slides:', hiddenSlides.length);
+
+  // Move hidden slides to holding container (completely out of Swiper)
+  hiddenSlides.forEach(slide => {
+    holdingContainer.appendChild(slide);
+  });
+
+  // Handle edge case: no visible slides
+  if (visibleSlides.length === 0) {
+    console.warn('No slides match current filters');
+    // Could show a "no results" message here
+    return;
+  }
+
+  // Sort visible slides by score (highest first)
+  visibleSlides.sort((a, b) => {
+    const scoreA = parseFloat(a.dataset.currentScore) || 0;
+    const scoreB = parseFloat(b.dataset.currentScore) || 0;
+    return scoreB - scoreA;
+  });
+
+  // Reorder DOM
+  visibleSlides.forEach(slide => wrapper.appendChild(slide));
+
+  // Fade out before rebuild
+  if (container) {
+    container.style.transition = 'opacity 0.15s ease';
+    container.style.opacity = '0';
+  }
+
+  // Reinitialize Swiper with ONLY visible slides (no loop)
+  window.swiperInstance = new Swiper('.swiper-container', {
+    slidesPerView: 3,
+    spaceBetween: 20,
+    centeredSlides: true,
+    loop: false,
+    navigation: {
+      nextEl: '.swiper-button-next',
+      prevEl: '.swiper-button-prev',
+    },
+    speed: 400,
+    watchOverflow: true,
+    on: {
+      slideChange: function() {
+        updateActiveSlideDescription(this);
+        updateArrowVisibility(this);
+      }
+    }
+  });
+
+  // Fade back in
+  requestAnimationFrame(() => {
+    setTimeout(() => {
+      if (container) {
+        container.style.opacity = '1';
+      }
+    }, 50);
+  });
+
+  updateActiveSlideDescription(window.swiperInstance);
+  updateArrowVisibility(window.swiperInstance);
+  updateAllCategoryCounts();
+}
+
+/* ======================================================
+   ACTIVE SLIDE DESCRIPTION
+   ====================================================== */
+let lastSlideIndex = 0;
+
+function updateActiveSlideDescription(swiper) {
+  const activeSlide = swiper.slides[swiper.activeIndex];
+  if (!activeSlide) return;
+  
+  const description = activeSlide.querySelector('.slider-description')?.textContent || '';
+  
+  const descContainer = document.querySelector('.engine-active-slide-description');
+  if (!descContainer) return;
+  
+  const hasCriteria = document.querySelectorAll('.engine-pill.is-active').length > 0;
+  if (hasCriteria) {
+    descContainer.classList.add('has-criteria');
+  } else {
+    descContainer.classList.remove('has-criteria');
+  }
+  
+  const activeCard = activeSlide.querySelector('.swiper-card');
+  if (activeCard) {
+    const cardWidth = activeCard.offsetWidth;
+    descContainer.style.width = `${cardWidth}px`;
+  }
+  
+  // Determine direction
+  const direction = swiper.activeIndex > lastSlideIndex ? 'next' : 'prev';
+  lastSlideIndex = swiper.activeIndex;
+  
+  // Remove ALL existing content immediately
+  const allContent = descContainer.querySelectorAll('.slide-description-content');
+  allContent.forEach(content => content.remove());
+  
+  const newContent = document.createElement('div');
+  newContent.className = `slide-description-content ${direction === 'next' ? 'entering-up' : 'entering-down'}`;
+  newContent.innerHTML = `
+    <div class="slide-description-text">${description}</div>
+  `;
+  
+  descContainer.appendChild(newContent);
+  
+  setTimeout(() => {
+    newContent.classList.remove('entering-up', 'entering-down');
+    newContent.classList.add('active');
+  }, 50);
+}
+
+/* ======================================================
+   ARROW VISIBILITY (manual control for non-loop mode)
+   ====================================================== */
+function updateArrowVisibility(swiper) {
+  const prevButton = document.querySelector('.swiper-button-prev');
+  const nextButton = document.querySelector('.swiper-button-next');
+  
+  if (!prevButton || !nextButton || !swiper) return;
+  
+  const isAtBeginning = swiper.isBeginning;
+  const isAtEnd = swiper.isEnd;
+  
+  // Hide prev arrow at beginning
+  if (isAtBeginning) {
+    prevButton.style.opacity = '0';
+    prevButton.style.visibility = 'hidden';
+    prevButton.style.pointerEvents = 'none';
+  } else {
+    prevButton.style.opacity = '1';
+    prevButton.style.visibility = 'visible';
+    prevButton.style.pointerEvents = 'auto';
+  }
+  
+  // Hide next arrow at end
+  if (isAtEnd) {
+    nextButton.style.opacity = '0';
+    nextButton.style.visibility = 'hidden';
+    nextButton.style.pointerEvents = 'none';
+  } else {
+    nextButton.style.opacity = '1';
+    nextButton.style.visibility = 'visible';
+    nextButton.style.pointerEvents = 'auto';
+  }
+}
+
+/* ======================================================
+   MODAL SYSTEM
+   ====================================================== */
+function setupModalSystem() {
+  // Add click handlers to all city cards - only active slides
+  document.addEventListener('click', (e) => {
+    const card = e.target.closest('.swiper-card');
+    if (card && !e.target.closest('.engine-modal')) {
+      // Don't open modal if clicking on region, state, or population tags
+      if (e.target.closest('.slider-region') || 
+          e.target.closest('.slider-state-tag') || 
+          e.target.closest('.slider-population')) {
+        return;
+      }
+      
+      // Check if the card is in the active slide
+      const slide = card.closest('.swiper-slide');
+      if (slide && slide.classList.contains('swiper-slide-active')) {
+        openCityModal(card);
+      }
+    }
+  });
+  
+  // Close modal handlers
+  document.addEventListener('click', (e) => {
+    if (e.target.closest('.modal-overlay') || e.target.closest('.modal-close')) {
+      closeAllModals();
+    }
+  });
+  
+  // ESC key to close
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeAllModals();
+    }
+  });
+}
+
+function openCityModal(cardElement) {
+  // Find the modal that's a sibling of this card (both inside same .swiper-slide)
+  const slide = cardElement.closest('.swiper-slide');
+  if (!slide) return;
+  
+  const modal = slide.querySelector('.engine-modal');
+  if (!modal) return;
+  
+  // Store reference to original parent so we can move it back
+  if (!modal.dataset.originalParent) {
+    modal.dataset.originalParent = 'stored';
+    modal._originalParent = slide;
+  }
+  
+  // Move modal to body to escape swiper transforms
+  document.body.appendChild(modal);
+  
+  // Get city's criteria scores
+  const criteriaData = slide.querySelector('[data-criteria]');
+  if (!criteriaData) return;
+  
+  let cityScores;
+  try {
+    cityScores = JSON.parse(criteriaData.getAttribute('data-criteria'));
+  } catch {
+    return;
+  }
+  
+  // Get user's active criteria
+  const activePills = Array.from(document.querySelectorAll('.engine-pill.is-active'));
+  const activeCriteria = activePills.map(pill => ({
+    key: slugToJSONKey(pill.getAttribute('data-key')),
+    slug: pill.getAttribute('data-key'),
+    name: pill.querySelector('.engine-pill-text')?.textContent || '',
+    score: cityScores[slugToJSONKey(pill.getAttribute('data-key'))] || 0,
+    pill: pill
+  }));
+  
+  // Sort by score and get top 5
+  const topCriteria = activeCriteria
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 5);
+  
+  // Match archetypes based on city's scores
+  const matchedArchetypes = matchArchetypesForCity(cityScores);
+  
+  // Get the score from the card's score box
+  const cardScore = slide.querySelector('.slider-score')?.textContent || '-';
+  
+  // Populate dynamic content
+  populateModalDynamicContent(modal, {
+    topCriteria,
+    archetypes: matchedArchetypes,
+    score: cardScore
+  });
+  
+  // Open modal
+  modal.classList.add('is-open');
+  document.body.style.overflow = 'hidden';
+  
+  // Mark that modal mode is active
+  document.body.classList.add('modal-navigation-mode');
+}
+
+function closeAllModals() {
+  const modals = document.querySelectorAll('.engine-modal.is-open');
+  modals.forEach(modal => {
+    modal.classList.remove('is-open');
+    
+    // Move modal back to original parent
+    if (modal._originalParent && modal.parentElement !== modal._originalParent) {
+      modal._originalParent.appendChild(modal);
+    }
+  });
+  document.body.style.overflow = '';
+  
+  // Exit modal navigation mode
+  document.body.classList.remove('modal-navigation-mode');
+}
+
+function navigateModalNext() {
+  // Get current modal
+  const currentModal = document.querySelector('.engine-modal.is-open');
+  if (!currentModal) return;
+  
+  // Fade out current modal content
+  const currentContainer = currentModal.querySelector('.modal-container');
+  if (currentContainer) {
+    currentContainer.style.opacity = '0';
+    currentContainer.style.transform = 'translateX(-30px)';
+  }
+  
+  // Navigate swiper to next slide
+  if (window.swiperInstance) {
+    window.swiperInstance.slideNext();
+    
+    // Wait for fade out, then switch modals
+    setTimeout(() => {
+      // Close current modal
+      currentModal.classList.remove('is-open');
+      if (currentModal._originalParent && currentModal.parentElement !== currentModal._originalParent) {
+        currentModal._originalParent.appendChild(currentModal);
+      }
+      // Reset transform
+      if (currentContainer) {
+        currentContainer.style.opacity = '';
+        currentContainer.style.transform = '';
+      }
+      
+      // Open new modal with fade in
+      const activeSlide = document.querySelector('.swiper-slide-active');
+      if (activeSlide) {
+        const card = activeSlide.querySelector('.swiper-card');
+        if (card) {
+          openCityModal(card);
+          // Fade in new modal
+          const newModal = document.querySelector('.engine-modal.is-open');
+          if (newModal) {
+            const newContainer = newModal.querySelector('.modal-container');
+            if (newContainer) {
+              newContainer.style.opacity = '0';
+              newContainer.style.transform = 'translateX(30px)';
+              setTimeout(() => {
+                newContainer.style.opacity = '1';
+                newContainer.style.transform = 'translateX(0)';
+              }, 50);
+            }
+          }
+        }
+      }
+    }, 300);
+  }
+}
+
+function navigateModalPrev() {
+  // Get current modal
+  const currentModal = document.querySelector('.engine-modal.is-open');
+  if (!currentModal) return;
+  
+  // Fade out current modal content
+  const currentContainer = currentModal.querySelector('.modal-container');
+  if (currentContainer) {
+    currentContainer.style.opacity = '0';
+    currentContainer.style.transform = 'translateX(30px)';
+  }
+  
+  // Navigate swiper to previous slide
+  if (window.swiperInstance) {
+    window.swiperInstance.slidePrev();
+    
+    // Wait for fade out, then switch modals
+    setTimeout(() => {
+      // Close current modal
+      currentModal.classList.remove('is-open');
+      if (currentModal._originalParent && currentModal.parentElement !== currentModal._originalParent) {
+        currentModal._originalParent.appendChild(currentModal);
+      }
+      // Reset transform
+      if (currentContainer) {
+        currentContainer.style.opacity = '';
+        currentContainer.style.transform = '';
+      }
+      
+      // Open new modal with fade in
+      const activeSlide = document.querySelector('.swiper-slide-active');
+      if (activeSlide) {
+        const card = activeSlide.querySelector('.swiper-card');
+        if (card) {
+          openCityModal(card);
+          // Fade in new modal
+          const newModal = document.querySelector('.engine-modal.is-open');
+          if (newModal) {
+            const newContainer = newModal.querySelector('.modal-container');
+            if (newContainer) {
+              newContainer.style.opacity = '0';
+              newContainer.style.transform = 'translateX(-30px)';
+              setTimeout(() => {
+                newContainer.style.opacity = '1';
+                newContainer.style.transform = 'translateX(0)';
+              }, 50);
+            }
+          }
+        }
+      }
+    }, 300);
+  }
+}
+
+function matchArchetypesForCity(cityScores) {
+  // Get all archetype data from the hidden collection list
+  const archetypeElements = document.querySelectorAll('[data-archetype]');
+  if (!archetypeElements.length) {
+    console.log('No archetype elements found');
+    return [];
+  }
+  
+  const archetypeMatches = [];
+  
+  archetypeElements.forEach(element => {
+    // Get name from data-archetype attribute OR from text content
+    const name = element.getAttribute('data-archetype') || element.textContent.trim();
+    if (!name) return;
+    
+    const coreIdentity = element.getAttribute('data-core-identity') || '';
+    const primaryList = element.getAttribute('data-primary-criteria')?.split(',').map(s => s.trim()).filter(Boolean) || [];
+    const secondaryList = element.getAttribute('data-secondary-criteria')?.split(',').map(s => s.trim()).filter(Boolean) || [];
+    
+    if (primaryList.length === 0) return; // Skip if no criteria defined
+    
+    // Count primary matches (city scores 80+ on primary criteria)
+    const primaryMatches = primaryList.filter(slug => {
+      const key = slugToJSONKey(slug);
+      return cityScores[key] >= 80;
+    }).length;
+    
+    // Count secondary matches (city scores 65+ on secondary criteria)
+    const secondaryMatches = secondaryList.filter(slug => {
+      const key = slugToJSONKey(slug);
+      return cityScores[key] >= 65;
+    }).length;
+    
+    // Need at least 2 primary matches to qualify
+    if (primaryMatches >= 2) {
+      const matchScore = (primaryMatches * 2) + secondaryMatches;
+      archetypeMatches.push({ name, coreIdentity, score: matchScore });
+    }
+  });
+  
+  // Return top 3 archetypes with their core identity
+  return archetypeMatches
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 3);
+}
+
+function populateModalDynamicContent(modal, data) {
+  // Set score
+  const scoreContainer = modal.querySelector('.modal-score');
+  if (scoreContainer && data.score) {
+    scoreContainer.textContent = data.score;
+  }
+  
+  // Set archetype tags
+  const tagsContainer = modal.querySelector('.modal-archetype-tags');
+  if (tagsContainer) {
+    if (data.archetypes.length > 0) {
+      tagsContainer.innerHTML = data.archetypes
+        .map(archetype => `
+          <div class="modal-archetype-tag">
+            ${archetype.name}
+            <div class="tooltip">${archetype.coreIdentity}</div>
+          </div>
+        `)
+        .join('');
+    } else {
+      tagsContainer.innerHTML = '';
+    }
+  }
+  
+  // Generate highlights (top 3 criteria with personalized phrases)
+  const highlightsContainer = modal.querySelector('.modal-highlights');
+  if (highlightsContainer && data.topCriteria.length) {
+    const highlights = data.topCriteria.slice(0, 3).map(criterion => {
+      const phrase = getHighlightPhrase(criterion.pill, criterion.score);
+      return `<div class="modal-highlight-item">${phrase}</div>`;
+    });
+    highlightsContainer.innerHTML = highlights.join('');
+  }
+  
+  // Generate score bars (user's top 5 selected criteria)
+  const scoresContainer = modal.querySelector('.modal-score-bars');
+  if (scoresContainer && data.topCriteria.length) {
+    const bars = data.topCriteria.map(criterion => `
+      <div class="modal-score-item">
+        <div class="modal-score-label">
+          <span>${criterion.name}</span>
+          <span class="modal-score-value">${criterion.score}</span>
+        </div>
+        <div class="modal-score-bar-bg">
+          <div class="modal-score-bar-fill" style="width: ${criterion.score}%"></div>
+        </div>
+      </div>
+    `);
+    scoresContainer.innerHTML = bars.join('');
+  }
+}
+
+function getHighlightPhrase(pillElement, score) {
+  if (!pillElement) return "Great match for this criterion";
+  
+  // Get the appropriate phrase based on score
+  if (score >= 90) {
+    return pillElement.getAttribute('data-phrase-90') || pillElement.getAttribute('data-phrase-short') || "Excellent match";
+  } else if (score >= 75) {
+    return pillElement.getAttribute('data-phrase-75') || pillElement.getAttribute('data-phrase-short') || "Great match";
+  } else if (score >= 60) {
+    return pillElement.getAttribute('data-phrase-60') || pillElement.getAttribute('data-phrase-short') || "Good match";
+  } else if (score >= 45) {
+    return pillElement.getAttribute('data-phrase-45') || pillElement.getAttribute('data-phrase-short') || "Decent match";
+  } else if (score >= 30) {
+    return pillElement.getAttribute('data-phrase-30') || pillElement.getAttribute('data-phrase-short') || "Fair match";
+  }
+  
+  return pillElement.getAttribute('data-phrase-short') || "Match found";
+}
+
+/* ======================================================
+   DOM READY
+   ====================================================== */
+document.addEventListener("DOMContentLoaded", function () {
+  groupCriteriaIntoCategories();
+  sortCriteriaInsideCategories();
+  setupCollapsibleCategories();
+  setupCriteriaDrawer();
+
+  document.body.addEventListener("click", e => {
+    const preset = e.target.closest('.engine-preset-button');
+    if (!preset) return;
+
+    e.preventDefault();
+
+    const keysAttr = preset.getAttribute('data-keys');
+    if (!keysAttr) return;
+
+    const isActive = preset.classList.contains('is-active');
+    const keys = keysAttr.split(',').map(k => k.trim());
+
+    document.querySelectorAll('.engine-preset-button.is-active')
+      .forEach(p => p.classList.remove('is-active'));
+    document.querySelectorAll('.engine-pill.is-active')
+      .forEach(p => p.classList.remove('is-active'));
+
+    if (!isActive) {
+      preset.classList.add('is-active');
+      keys.forEach(key => {
+        const pill = document.querySelector(`.engine-pill[data-key="${key}"]`);
+        if (pill) pill.classList.add('is-active');
+      });
+      
+      openCriteriaDrawer(); // Opens with auto-close timer
+    }
+
+    setTimeout(() => {
+      sortSlidesAndReorder();
+      updateClearAllButton();
+    }, 20);
+  });
+
+  document.body.addEventListener("click", e => {
+    const pill = e.target.closest('.engine-pill');
+    if (!pill) return;
+
+    e.preventDefault();
+    pill.classList.toggle('is-active');
+    
+    // Deactivate all presets when manually changing pills
+    document.querySelectorAll('.engine-preset-button.is-active')
+      .forEach(p => p.classList.remove('is-active'));
+
+    setTimeout(() => {
+      sortSlidesAndReorder();
+      updateClearAllButton();
+    }, 100);
+  });
+
+  // Region tag click handler
+  document.body.addEventListener("click", e => {
+    const regionTag = e.target.closest('.slider-region');
+    if (!regionTag) return;
+
+    e.preventDefault();
+    e.stopPropagation(); // Prevent card click
+
+    const clickedRegion = regionTag.textContent.trim();
+
+    // Toggle region filter
+    if (window.activeRegion === clickedRegion) {
+      // Clicking active region - clear filter
+      window.activeRegion = null;
+      document.querySelectorAll('.slider-region.is-active')
+        .forEach(r => r.classList.remove('is-active'));
+    } else {
+      // Set new region filter
+      window.activeRegion = clickedRegion;
+      document.querySelectorAll('.slider-region')
+        .forEach(r => {
+          if (r.textContent.trim() === window.activeRegion) {
+            r.classList.add('is-active');
+          } else {
+            r.classList.remove('is-active');
+          }
+        });
+    }
+
+    setTimeout(() => {
+      sortSlidesAndReorder(true); // Force rebuild for tag filters
+      updateClearAllButton();
+    }, 100);
+  });
+
+  // State tag click handler
+  document.body.addEventListener("click", e => {
+    const stateTag = e.target.closest('.slider-state-tag');
+    if (!stateTag) return;
+
+    e.preventDefault();
+    e.stopPropagation(); // Prevent card click
+
+    const clickedState = stateTag.textContent.trim();
+
+    // Toggle state filter
+    if (window.activeState === clickedState) {
+      // Clicking active state - clear filter
+      window.activeState = null;
+      document.querySelectorAll('.slider-state-tag.is-active')
+        .forEach(s => s.classList.remove('is-active'));
+    } else {
+      // Set new state filter
+      window.activeState = clickedState;
+      document.querySelectorAll('.slider-state-tag')
+        .forEach(s => {
+          if (s.textContent.trim() === window.activeState) {
+            s.classList.add('is-active');
+          } else {
+            s.classList.remove('is-active');
+          }
+        });
+    }
+
+    setTimeout(() => {
+      sortSlidesAndReorder(true); // Force rebuild for tag filters
+      updateClearAllButton();
+    }, 100);
+  });
+
+  // Population tag click handler
+  document.body.addEventListener("click", e => {
+    const popTag = e.target.closest('.slider-population');
+    if (!popTag) return;
+
+    e.preventDefault();
+    e.stopPropagation(); // Prevent card click
+
+    const clickedPopulation = popTag.textContent.trim();
+
+    // Toggle population filter
+    if (window.activePopulation === clickedPopulation) {
+      // Clicking active population - clear filter
+      window.activePopulation = null;
+      document.querySelectorAll('.slider-population.is-active')
+        .forEach(p => p.classList.remove('is-active'));
+    } else {
+      // Set new population filter
+      window.activePopulation = clickedPopulation;
+      document.querySelectorAll('.slider-population')
+        .forEach(p => {
+          if (p.textContent.trim() === window.activePopulation) {
+            p.classList.add('is-active');
+          } else {
+            p.classList.remove('is-active');
+          }
+        });
+    }
+
+    setTimeout(() => {
+      sortSlidesAndReorder(true); // Force rebuild for tag filters
+      updateClearAllButton();
+    }, 100);
+  });
+
+  const swiperInstance = new Swiper('.swiper-container', {
+    slidesPerView: 3,
+    spaceBetween: 20,
+    centeredSlides: true,
+    loop: false,
+    watchOverflow: true,
+    navigation: {
+      nextEl: '.swiper-button-next',
+      prevEl: '.swiper-button-prev',
+    },
+    speed: 400,
+    on: {
+      slideChange: function() {
+        updateActiveSlideDescription(this);
+        updateArrowVisibility(this);
+      }
+    }
+  });
+
+  window.swiperInstance = swiperInstance;
+  
+  updateActiveSlideDescription(swiperInstance);
+  updateArrowVisibility(swiperInstance);
+  updateAllCategoryCounts();
+  
+  setupModalSystem();
+  
+  // Hijack navigation arrows for modal navigation
+  const nextButton = document.querySelector('.swiper-button-next');
+  const prevButton = document.querySelector('.swiper-button-prev');
+  
+  if (nextButton) {
+    nextButton.addEventListener('click', (e) => {
+      if (document.body.classList.contains('modal-navigation-mode')) {
+        e.stopImmediatePropagation();
+        navigateModalNext();
+      }
+    }, true); // Use capture phase to intercept before Swiper
+  }
+  
+  if (prevButton) {
+    prevButton.addEventListener('click', (e) => {
+      if (document.body.classList.contains('modal-navigation-mode')) {
+        e.stopImmediatePropagation();
+        navigateModalPrev();
+      }
+    }, true); // Use capture phase to intercept before Swiper
+  }
+  
+  setupMapView();
+});
+
+/* ======================================================
+   MAP VIEW SYSTEM
+   ====================================================== */
+let mapInstance = null;
+let mapMarkers = [];
+let isMapView = false;
+
+function setupMapView() {
+  const toggleButton = document.querySelector('.engine-map-toggle');
+  const mapWrapper = document.querySelector('.engine-map-wrapper');
+  
+  if (!toggleButton || !mapWrapper) {
+    console.warn('Map toggle or wrapper not found');
+    return;
+  }
+  
+  // Set initial button text
+  toggleButton.innerHTML = `
+    <span class="engine-map-toggle-icon">🗺</span>
+    <span>Map View</span>
+  `;
+  
+  // Toggle between map and list view
+  toggleButton.addEventListener('click', () => {
+    isMapView = !isMapView;
+    
+    if (isMapView) {
+      // Switch to map view
+      mapWrapper.classList.add('is-active');
+      toggleButton.innerHTML = `
+        <span class="engine-map-toggle-icon">📄</span>
+        <span>List View</span>
+      `;
+      
+      // Initialize map if not already done
+      if (!mapInstance) {
+        initializeMap();
+      }
+    } else {
+      // Switch to list view
+      mapWrapper.classList.remove('is-active');
+      toggleButton.innerHTML = `
+        <span class="engine-map-toggle-icon">🗺</span>
+        <span>Map View</span>
+      `;
+    }
+  });
+}
+
+function initializeMap() {
+  // Check if Mapbox is available
+  if (typeof mapboxgl === 'undefined') {
+    console.error('Mapbox GL JS not loaded');
+    return;
+  }
+  
+  // IMPORTANT: Replace 'YOUR_MAPBOX_TOKEN' with your actual Mapbox access token
+  // Get one free at: https://account.mapbox.com/access-tokens/
+  mapboxgl.accessToken = 'YOUR_MAPBOX_TOKEN';
+  
+  mapInstance = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/mapbox/light-v11', // Clean, minimal style
+    center: [-98.5795, 39.8283], // Center of USA
+    zoom: 3.5,
+    projection: 'mercator'
+  });
+  
+  // Add navigation controls
+  mapInstance.addControl(new mapboxgl.NavigationControl(), 'top-right');
+  
+  // Wait for map to load, then add markers
+  mapInstance.on('load', () => {
+    addCityMarkers();
+  });
+}
+
+function addCityMarkers() {
+  // Get all city slides
+  const slides = document.querySelectorAll('.swiper-slide');
+  
+  slides.forEach(slide => {
+    const cityName = slide.querySelector('.slider-text')?.textContent;
+    const stateName = slide.querySelector('.slider-state')?.textContent;
+    const scoreEl = slide.querySelector('.slider-score');
+    const lat = parseFloat(slide.getAttribute('data-lat'));
+    const lng = parseFloat(slide.getAttribute('data-lng'));
+    
+    if (!cityName || isNaN(lat) || isNaN(lng)) return;
+    
+    // Get current score or default
+    const score = scoreEl ? scoreEl.textContent : '0';
+    
+    // Create custom marker element
+    const markerEl = document.createElement('div');
+    markerEl.className = 'map-marker';
+    markerEl.innerHTML = `
+      ${score}
+      <div class="map-marker-label">${cityName}</div>
+    `;
+    
+    // Create marker
+    const marker = new mapboxgl.Marker({
+      element: markerEl,
+      anchor: 'center'
+    })
+      .setLngLat([lng, lat])
+      .addTo(mapInstance);
+    
+    // Click handler - open modal
+    markerEl.addEventListener('click', () => {
+      const card = slide.querySelector('.swiper-card');
+      if (card) {
+        card.click(); // Trigger existing modal system
+      }
+    });
+    
+    mapMarkers.push(marker);
+  });
+}
+
+// Function to update marker scores when criteria change
+function updateMapMarkers() {
+  if (!mapInstance) return;
+  
+  const slides = document.querySelectorAll('.swiper-slide');
+  
+  slides.forEach((slide, index) => {
+    if (!mapMarkers[index]) return;
+    
+    const scoreEl = slide.querySelector('.slider-score');
+    const score = scoreEl ? scoreEl.textContent : '0';
+    
+    const markerEl = mapMarkers[index].getElement();
+    if (markerEl) {
+      const scoreDisplay = markerEl.childNodes[0];
+      if (scoreDisplay && scoreDisplay.nodeType === Node.TEXT_NODE) {
+        scoreDisplay.textContent = score;
+      }
+    }
+  });
+}
+</script>
