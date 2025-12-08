@@ -1117,3 +1117,29 @@ p {
 .map-marker:hover .map-marker-label {
   opacity: 1;
 }
+
+/* ======================================================
+   SWIPER FILTER HOLDING
+   ====================================================== */
+#swiper-holding {
+  display: none !important;
+  position: absolute;
+  left: -9999px;
+  visibility: hidden;
+}
+
+/* When fewer than 3 slides, prevent weird stretching */
+.swiper-container .swiper-slide {
+  max-width: 500px;
+}
+
+/* Ensure cards don't resize when filtered */
+.swiper-slide .swiper-card {
+  width: 100%;
+  max-width: 500px;
+}
+
+.swiper-slide .slider-image {
+  width: 100%;
+  max-width: 500px;
+}
