@@ -50,9 +50,9 @@
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 0;
-  height: 45%;
-  background: #f5e104;
+  top: 20%;
+  height: 55%;
+  background: #fc3;
   border-radius: 3px;
   z-index: -1;
 }
@@ -177,7 +177,7 @@ p {
   transform: translateX(-50%);
   width: 40px;
   height: 3px;
-  background: #f5e104;
+  background: #fc3;
 }
 .slider-state {
   font-size: 14px;
@@ -193,7 +193,7 @@ p {
   position: absolute;
   top: 20px;
   right: 20px;
-  background: #f5e104;
+  background: #fc3;
   color: #333;
   font-weight: 700;
   font-size: 32px;
@@ -257,7 +257,7 @@ p {
 .slider-region.is-active,
 .slider-state-tag.is-active,
 .slider-population.is-active {
-  background: #f5e104;
+  background: #fc3;
   color: #333;
   font-weight: 600;
 }
@@ -363,7 +363,7 @@ p {
   z-index: 10;
 }
 .drawer-toggle-icon:hover {
-  background: #f5e104;
+  background: #fc3;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   transform: translateX(-50%) translateY(-50%) rotate(180deg) scale(1.1);
 }
@@ -442,7 +442,7 @@ p {
   font-size: 13px;
 }
 .category-active-count {
-  background: #f5e104;
+  background: #fc3;
   color: #333;
   font-weight: 600;
   font-size: 11px;
@@ -502,8 +502,8 @@ p {
 }
 .engine-pill.is-active {
   animation: pillPop 0.4s ease;
-  background: #f5e104;
-  border-color: #f5e104;
+  background: #fc3;
+  border-color: #fc3;
 }
 .engine-pill.is-active .engine-pill-text {
   color: #333 !important;
@@ -550,8 +550,8 @@ p {
 }
 .engine-preset-button.is-active {
   color: #333 !important;
-  background: #f5e104;
-  border-color: #f5e104;
+  background: #fc3;
+  border-color: #fc3;
   font-weight: 600;
   transform: scale(1);
 }
@@ -622,8 +622,8 @@ p {
   z-index: 10000;
   color: #333 !important;
   cursor: pointer;
-  background: #f5e104 !important;
-  border: 1px solid #f5e104 !important;
+  background: #fc3 !important;
+  border: 1px solid #fc3 !important;
   border-radius: 50%;
   justify-content: center;
   align-items: center;
@@ -767,7 +767,7 @@ p {
   position: absolute;
   top: 440px;
   right: 32px;
-  background: #f5e104;
+  background: #fc3;
   color: #333;
   font-weight: 700;
   font-size: 32px;
@@ -894,7 +894,7 @@ p {
 }
 .modal-highlight-item::before {
   content: "•";
-  color: #f5e104;
+  color: #fc3;
   font-size: 18px;
   font-weight: 700;
   flex-shrink: 0;
@@ -936,7 +936,7 @@ p {
 }
 .modal-score-bar-fill {
   height: 100%;
-  background: linear-gradient(90deg, #f5e104 0%, #ffd700 100%);
+  background: linear-gradient(90deg, #fc3 0%, #ffd700 100%);
   border-radius: 3px;
   transition: width 0.6s ease;
 }
@@ -949,7 +949,7 @@ p {
   align-items: center;
 }
 .modal-primary-button {
-  background: #f5e104;
+  background: #fc3;
   color: #333;
   padding: 14px 28px;
   border-radius: 12px;
@@ -1035,7 +1035,7 @@ p {
   right: 40px !important;
   left: auto !important;
   top: auto !important;
-  background: #f5e104 !important;
+  background: #fc3 !important;
   color: #333 !important;
   padding: 14px 24px !important;
   border-radius: 12px !important;
@@ -1080,7 +1080,7 @@ p {
   height: 100%;
 }
 .map-marker {
-  background: #f5e104;
+  background: #fc3;
   color: #333;
   width: 50px;
   height: 50px;
