@@ -646,6 +646,11 @@ p {
   transform: scale(1.15);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
+.swiper-button-next.swiper-button-disabled,
+.swiper-button-prev.swiper-button-disabled {
+  opacity: 0;
+  pointer-events: none;
+}
 /* ======================================================
    MODAL STYLING
    ====================================================== */
