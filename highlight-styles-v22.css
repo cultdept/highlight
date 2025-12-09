@@ -1,5 +1,5 @@
 /* Highlight Travel Engine Styles */
-/* Last updated: 2025-12-08 */
+/* VERSION: 2025-12-09 v22 */
 
 /* ======================================================
    MAPBOX POPUP CLEANUP
@@ -1089,12 +1089,11 @@ body.modal-navigation-mode .swiper-button-prev {
   bottom: 0;
   background: white;
   z-index: 100;
-  transform: translateY(-100%);
-  transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  display: none;
   pointer-events: none;
 }
 .engine-map-wrapper.is-active {
-  transform: translateY(0);
+  display: block;
   pointer-events: auto;
 }
 #map {
