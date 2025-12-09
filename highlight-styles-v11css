@@ -636,6 +636,7 @@ p {
   display: flex;
   position: absolute;
   bottom: 50%;
+  pointer-events: auto !important;
 }
 .swiper-button-next {
   right: -1%;
@@ -657,6 +658,25 @@ p {
 /* ======================================================
    MODAL STYLING
    ====================================================== */
+/* When modal is open, ensure arrows are above it for navigation */
+body.modal-navigation-mode .swiper-button-next,
+body.modal-navigation-mode .swiper-button-prev {
+  z-index: 10001 !important;
+  position: fixed !important;
+}
+body.modal-navigation-mode .swiper-button-next {
+  right: 20px !important;
+  top: 50% !important;
+  bottom: auto !important;
+  transform: translateY(-50%);
+}
+body.modal-navigation-mode .swiper-button-prev {
+  left: 20px !important;
+  top: 50% !important;
+  bottom: auto !important;
+  transform: translateY(-50%);
+}
+
 .engine-modal {
   position: fixed;
   top: 0;
