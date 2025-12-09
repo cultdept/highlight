@@ -488,6 +488,7 @@ p {
 }
 .engine-pill:hover {
   border-color: #999;
+  transform: scale(1.03);
 }
 .engine-pill-text {
   transition: color 0.2s ease;
@@ -556,8 +557,9 @@ p {
   transform: scale(1);
 }
 .engine-preset-button.is-active:hover {
-  background: #e0b800;
-  border-color: #e0b800;
+  background: #fc3;
+  border-color: #fc3;
+  color: #111 !important;
 }
 /* ======================================================
    TOOLTIPS
@@ -630,7 +632,7 @@ p {
   width: 3rem;
   height: 3rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease !important;
   display: flex;
   position: absolute;
   bottom: 50%;
@@ -643,8 +645,8 @@ p {
 }
 .swiper-button-next:hover,
 .swiper-button-prev:hover {
-  transform: scale(1.15);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: scale(1.15) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
 }
 .swiper-button-next.swiper-button-disabled,
 .swiper-button-prev.swiper-button-disabled {
@@ -971,7 +973,7 @@ p {
   line-height: 1;
 }
 .modal-primary-button:hover {
-  background: #e0b800;
+  color: #111;
   transform: translateY(-2px);
 }
 .modal-footer {
@@ -1052,7 +1054,7 @@ p {
   user-select: none !important;
 }
 .engine-map-toggle:hover {
-  background: #e0b800 !important;
+  color: #111 !important;
   transform: scale(1.05) !important;
 }
 .engine-map-toggle-icon {
