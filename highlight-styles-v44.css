@@ -1,5 +1,5 @@
 /* Highlight Travel Engine Styles */
-/* VERSION: 2025-12-10 v43 - Sidebar layout, white sidebar, charcoal footer */
+/* VERSION: 2025-12-10 v44 - Sidebar layout, white sidebar, charcoal footer */
 
 /* ======================================================
    CSS VARIABLES
@@ -347,36 +347,21 @@ p {
   display: block;
 }
 
-/* Inactive slides */
+/* Inactive slides - grayscale only, no opacity or overlay */
 .swiper-slide:not(.swiper-slide-active) .slider-image {
-  filter: grayscale(100%) blur(2px);
-  opacity: 0.6;
-  transition: filter 0.5s ease, opacity 0.5s ease;
-}
-.swiper-slide:not(.swiper-slide-active)::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(255, 255, 255, 0.4);
-  pointer-events: none;
-  z-index: 5;
-  transition: opacity 0.5s ease;
+  filter: grayscale(100%);
+  transition: filter 0.5s ease;
 }
 
 /* Active slide without criteria */
 .swiper-slide-active .slider-image {
-  filter: grayscale(100%) blur(2px);
-  opacity: 0.6;
-  transition: filter 0.5s ease, opacity 0.5s ease;
+  filter: grayscale(100%);
+  transition: filter 0.5s ease;
 }
 
 /* With criteria */
 .swiper-slide.has-criteria:not(.swiper-slide-active) .slider-image {
-  filter: grayscale(100%) blur(0px);
-  opacity: 0.7;
+  filter: grayscale(100%);
 }
 .swiper-slide.has-criteria.swiper-slide-active .slider-image {
   filter: grayscale(0%) blur(0px);
@@ -440,8 +425,8 @@ p {
   position: absolute;
   top: 20px;
   right: 20px;
-  background: var(--charcoal);
-  color: var(--white);
+  background: var(--yellow);
+  color: var(--charcoal);
   font-family: 'Inter', sans-serif;
   font-weight: 700;
   font-size: 22px;
@@ -454,7 +439,7 @@ p {
   opacity: 0;
   transition: opacity 0.4s ease;
   flex-shrink: 0;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 .swiper-slide.has-criteria.swiper-slide-active .slider-score {
   opacity: 1;
