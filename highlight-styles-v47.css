@@ -1,5 +1,5 @@
 /* Highlight Travel Engine Styles */
-/* VERSION: 2025-12-10 v46 - Footer fixes, CTA fix */
+/* VERSION: 2025-12-10 v47 - Footer class fix, yellow back, lighter font weight */
 
 /* ======================================================
    CSS VARIABLES
@@ -16,8 +16,8 @@
   --charcoal: #2d2d2d;
   --charcoal-light: #3d3d3d;
   --charcoal-dark: #1a1a1a;
-  --amber: #FFBF00;
-  --amber-hover: #E6AC00;
+  --yellow: #f5e104;
+  --yellow-hover: #e5d100;
 }
 
 /* ======================================================
@@ -60,7 +60,7 @@
   right: 0;
   top: 20%;
   height: 55%;
-  background: var(--amber);
+  background: var(--yellow);
   border-radius: 0px;
   z-index: -1;
 }
@@ -267,12 +267,12 @@ p {
   transform: scale(1.03);
 }
 .engine-preset-button.is-active {
-  background: var(--amber);
+  background: var(--yellow);
   color: var(--charcoal);
   font-weight: 600;
 }
 .engine-preset-button.is-active:hover {
-  background: var(--amber-hover);
+  background: var(--yellow-hover);
   transform: scale(1);
 }
 .preset-emoji {
@@ -388,7 +388,7 @@ p {
 .slider-text {
   font-family: 'new-spirit', Georgia, serif;
   font-size: 32px;
-  font-weight: 600;
+  font-weight: 500;
   line-height: 1.1;
   color: white;
   margin-bottom: 12px;
@@ -404,7 +404,7 @@ p {
   transform: translateX(-50%);
   width: 40px;
   height: 3px;
-  background: var(--amber);
+  background: var(--yellow);
   border-radius: 2px;
 }
 
@@ -425,7 +425,7 @@ p {
   position: absolute;
   top: 20px;
   right: 20px;
-  background: var(--amber);
+  background: var(--yellow);
   color: var(--charcoal);
   font-family: 'Inter', sans-serif;
   font-weight: 700;
@@ -489,7 +489,7 @@ p {
 .slider-region.is-active,
 .slider-state-tag.is-active,
 .slider-population.is-active {
-  background: var(--amber);
+  background: var(--yellow);
   color: var(--charcoal);
   font-weight: 600;
 }
@@ -715,7 +715,7 @@ p {
   position: absolute;
   top: -8px;
   right: -8px;
-  background: var(--amber);
+  background: var(--yellow);
   color: var(--charcoal);
   font-size: 10px;
   font-weight: 700;
@@ -911,8 +911,8 @@ p {
 }
 .engine-pill.is-active {
   animation: pillPop 0.3s ease;
-  background: var(--amber);
-  border-color: var(--amber);
+  background: var(--yellow);
+  border-color: var(--yellow);
   color: var(--charcoal);
   font-weight: 500;
 }
@@ -960,7 +960,7 @@ p {
 .sidebar-city-name {
   font-family: 'new-spirit', Georgia, serif;
   font-size: 28px;
-  font-weight: 600;
+  font-weight: 500;
   line-height: 1.1;
   color: var(--charcoal);
   margin-bottom: 4px;
@@ -1073,7 +1073,7 @@ p {
 }
 .sidebar-highlight-item::before {
   content: "•";
-  color: var(--amber);
+  color: var(--yellow);
   font-size: 18px;
   font-weight: 700;
   flex-shrink: 0;
@@ -1117,7 +1117,7 @@ p {
 }
 .sidebar-score-bar-fill {
   height: 100%;
-  background: var(--amber);
+  background: var(--yellow);
   border-radius: 3px;
   transition: width 0.6s ease;
 }
@@ -1145,7 +1145,7 @@ p {
   border: none;
 }
 .sidebar-primary-button:hover {
-  background: var(--amber) !important;
+  background: var(--yellow) !important;
   color: var(--charcoal) !important;
 }
 .sidebar-primary-button:link,
@@ -1213,13 +1213,14 @@ p {
   align-items: baseline !important;
   gap: 8px !important;
 }
+.footer-number,
 .footer-stat-number,
-.engine-footer-drawer .footer-stat-number,
-.footer-content .footer-stat-number {
+.engine-footer-drawer .footer-number,
+.footer-content .footer-number {
   font-family: 'new-spirit', Georgia, serif !important;
   font-size: 28px !important;
   font-weight: 600 !important;
-  color: var(--amber) !important;
+  color: var(--yellow) !important;
 }
 .footer-stat-label,
 .engine-footer-drawer .footer-stat-label,
@@ -1267,7 +1268,7 @@ p {
   background: transparent !important;
 }
 .footer-view-link.is-active {
-  color: var(--amber) !important;
+  color: var(--yellow) !important;
   background: transparent !important;
 }
 
@@ -1491,7 +1492,7 @@ body.modal-navigation-mode .swiper-button-prev {
 }
 .modal-highlight-item::before {
   content: "•";
-  color: var(--amber);
+  color: var(--yellow);
   font-size: 18px;
   font-weight: 700;
   flex-shrink: 0;
@@ -1528,7 +1529,7 @@ body.modal-navigation-mode .swiper-button-prev {
 }
 .modal-score-bar-fill {
   height: 100%;
-  background: var(--amber);
+  background: var(--yellow);
   border-radius: 3px;
   transition: width 0.6s ease;
 }
@@ -1557,7 +1558,7 @@ body.modal-navigation-mode .swiper-button-prev {
   line-height: 1;
 }
 .modal-primary-button:hover {
-  background: var(--amber);
+  background: var(--yellow);
   color: var(--charcoal);
 }
 .modal-footer {
