@@ -1,0 +1,417 @@
+/* Highlight Travel Engine - Mobile Styles */
+/* VERSION: 2025-12-10 v44 */
+/* Load after main stylesheet, wrapped in media query or via <link media="(max-width: 1024px)"> */
+
+/* ======================================================
+   TABLET BREAKPOINT (1024px and below)
+   ====================================================== */
+@media screen and (max-width: 1024px) {
+  
+  /* Grid: Hide sidebar, single column */
+  .engine-page {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr auto;
+  }
+  
+  /* Hide sidebar on tablet - use modal instead */
+  .engine-sidebar {
+    display: none;
+  }
+  
+  /* Main content takes full width */
+  .engine-main {
+    padding: 0 24px 24px;
+  }
+  
+  /* Question scales down */
+  .engine-question {
+    font-size: 48px !important;
+    line-height: 1.1 !important;
+    margin-bottom: 24px;
+  }
+  
+  /* Presets: smaller, tighter */
+  .engine-presets {
+    padding: 40px 16px 32px;
+    gap: 8px;
+  }
+  .engine-preset-button {
+    padding: 8px 14px;
+    font-size: 12px;
+  }
+  
+  /* Cards: 2 visible */
+  .swiper-slide {
+    width: 340px;
+  }
+  
+  /* Category tabs: horizontally scrollable */
+  .engine-criteria-boxes {
+    overflow-x: auto;
+    overflow-y: visible;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 8px;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    gap: 8px;
+  }
+  .engine-category {
+    flex-shrink: 0;
+    max-width: none;
+  }
+  
+  /* Footer: stack stats */
+  .footer-content {
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px 24px 20px;
+  }
+  .footer-stats {
+    gap: 32px;
+  }
+  .footer-stat-number {
+    font-size: 24px;
+  }
+  
+  /* Header adjustments */
+  .engine-header {
+    padding: 0 24px;
+  }
+  .header-nav {
+    gap: 24px;
+  }
+  .header-nav-link {
+    font-size: 13px;
+  }
+}
+
+/* ======================================================
+   MOBILE BREAKPOINT (768px and below)
+   ====================================================== */
+@media screen and (max-width: 768px) {
+  
+  /* Question: much smaller */
+  .engine-question {
+    font-size: 32px !important;
+    padding: 0 16px;
+    margin-bottom: 20px;
+  }
+  
+  /* Presets: wrap naturally */
+  .engine-presets {
+    padding: 24px 12px;
+    gap: 6px;
+  }
+  .engine-preset-button {
+    padding: 6px 12px;
+    font-size: 11px;
+  }
+  
+  /* Cards: single card view */
+  .swiper-slide {
+    width: 85vw;
+    max-width: 360px;
+  }
+  
+  /* Swiper arrows: smaller, tighter to cards */
+  .swiper-button-next,
+  .swiper-button-prev {
+    width: 36px;
+    height: 36px;
+  }
+  .swiper-button-next {
+    right: 4px;
+  }
+  .swiper-button-prev {
+    left: 4px;
+  }
+  
+  /* Description below cards */
+  .engine-active-slide-description {
+    width: 100% !important;
+    max-width: 100%;
+    padding: 0 16px;
+    min-height: 80px;
+  }
+  .slide-description-text {
+    font-size: 12px;
+  }
+  
+  /* Category tabs: full scroll */
+  .engine-criteria-drawer {
+    padding: 0 12px;
+    margin-bottom: 16px;
+  }
+  .engine-criteria-boxes {
+    gap: 6px;
+  }
+  .engine-category-header {
+    padding: 10px 12px;
+    font-size: 11px;
+  }
+  
+  /* Category dropdowns: full screen overlay */
+  .engine-category-body {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    max-width: 100%;
+    min-width: 100%;
+    border-radius: 0;
+    transform: none;
+    z-index: 2000;
+    padding: 20px;
+    overflow-y: auto;
+  }
+  .engine-category-body::before,
+  .engine-category-body::after {
+    display: none;
+  }
+  .category-panel-close {
+    width: 32px;
+    height: 32px;
+    font-size: 24px;
+    top: 16px;
+    right: 16px;
+  }
+  .category-panel-header {
+    padding-right: 48px;
+  }
+  .category-panel-title {
+    font-size: 18px;
+  }
+  
+  /* Header: simplified */
+  .engine-header {
+    padding: 0 16px;
+    height: 56px;
+  }
+  .header-logo img {
+    height: 24px;
+  }
+  /* Hide nav on mobile, show hamburger (if implemented) */
+  .header-nav {
+    display: none;
+  }
+  .header-map-btn {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+  .header-map-btn span {
+    display: none; /* Hide text, keep icon */
+  }
+  
+  /* Footer: compact */
+  .footer-content {
+    padding: 12px 16px 16px;
+    gap: 12px;
+  }
+  .footer-stats {
+    gap: 20px;
+    justify-content: center;
+    width: 100%;
+  }
+  .footer-stat-number {
+    font-size: 20px;
+  }
+  .footer-stat-label {
+    font-size: 11px;
+  }
+  .footer-view-toggle {
+    gap: 16px;
+  }
+  .footer-view-label,
+  .footer-view-link {
+    font-size: 12px;
+  }
+  
+  /* Filter tags on cards: smaller */
+  .slider-region,
+  .slider-state-tag,
+  .slider-population {
+    font-size: 9px;
+    padding: 3px 8px;
+  }
+  .slider-region {
+    top: 12px;
+    left: 12px;
+  }
+  .slider-state-tag {
+    top: 40px;
+    left: 12px;
+  }
+  .slider-population {
+    top: 68px;
+    left: 12px;
+  }
+  
+  /* Score badge: smaller */
+  .slider-score {
+    width: 48px;
+    height: 48px;
+    font-size: 18px;
+    top: 12px;
+    right: 12px;
+  }
+  
+  /* Card overlay text */
+  .swiper-card-overlay {
+    padding: 24px 16px;
+  }
+  .slider-text {
+    font-size: 32px;
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+  }
+  .slider-text::after {
+    width: 30px;
+    height: 2px;
+  }
+  .slider-state {
+    font-size: 14px;
+  }
+  
+  /* Modal: full screen on mobile */
+  .modal-container {
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+    max-height: 100%;
+    border-radius: 0;
+    overflow-y: auto;
+  }
+  .modal-hero-image img,
+  .modal-hero-img {
+    height: 280px;
+  }
+  .modal-score {
+    top: 240px;
+    right: 16px;
+    width: 56px;
+    height: 56px;
+    font-size: 24px;
+  }
+  .modal-city-name {
+    font-size: 28px;
+    padding: 24px 16px 0;
+    padding-right: 80px;
+  }
+  .modal-state-name {
+    padding: 4px 16px 0;
+    font-size: 14px;
+  }
+  .modal-archetype-tags {
+    padding: 12px 16px 0;
+  }
+  .modal-summary {
+    padding: 16px;
+    font-size: 13px;
+  }
+  .modal-content-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding: 24px 16px;
+  }
+  .modal-ctas {
+    padding: 20px 16px;
+  }
+  .modal-close {
+    top: 12px;
+    right: 12px;
+    width: 36px;
+    height: 36px;
+  }
+  
+  /* Modal nav arrows: bottom corners on mobile */
+  body.modal-navigation-mode .swiper-button-next,
+  body.modal-navigation-mode .swiper-button-prev {
+    top: auto !important;
+    bottom: 100px !important;
+  }
+  body.modal-navigation-mode .swiper-button-next {
+    right: 16px !important;
+  }
+  body.modal-navigation-mode .swiper-button-prev {
+    left: 16px !important;
+  }
+}
+
+/* ======================================================
+   SMALL MOBILE (480px and below)
+   ====================================================== */
+@media screen and (max-width: 480px) {
+  
+  .engine-question {
+    font-size: 26px !important;
+  }
+  
+  .swiper-slide {
+    width: 90vw;
+  }
+  
+  .engine-preset-button {
+    padding: 5px 10px;
+    font-size: 10px;
+  }
+  
+  .footer-stats {
+    gap: 16px;
+  }
+  .footer-stat-number {
+    font-size: 18px;
+  }
+  
+  .slider-text {
+    font-size: 28px;
+  }
+  
+  .modal-hero-image img,
+  .modal-hero-img {
+    height: 220px;
+  }
+  .modal-score {
+    top: 180px;
+  }
+  .modal-city-name {
+    font-size: 24px;
+  }
+}
+
+/* ======================================================
+   TOUCH DEVICE OPTIMIZATIONS
+   ====================================================== */
+@media (hover: none) and (pointer: coarse) {
+  /* Larger tap targets */
+  .engine-preset-button {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+  
+  .engine-pill {
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+  }
+  
+  .engine-category-header {
+    min-height: 44px;
+  }
+  
+  .swiper-button-next,
+  .swiper-button-prev {
+    min-width: 44px;
+    min-height: 44px;
+  }
+  
+  /* Remove hover states that don't apply */
+  .engine-preset-button:hover {
+    transform: none;
+  }
+  .swiper-slide-active .swiper-card:hover {
+    transform: none;
+  }
+}
