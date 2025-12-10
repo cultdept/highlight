@@ -100,6 +100,7 @@ p {
   flex-direction: column;
   padding: 0 40px 40px;
   overflow-y: auto;
+  justify-content: center;
 }
 
 .engine-sidebar {
@@ -237,15 +238,15 @@ p {
   cursor: grabbing;
 }
 
-/* Slide sizing - 5 cards visible */
+/* Slide sizing - 3 cards visible */
 .swiper-slide {
   z-index: 0;
   flex: none;
-  width: 320px;
+  width: 420px;
   transition: transform 0.3s ease;
   position: relative;
   overflow: hidden;
-  transform: scale(0.9);
+  transform: scale(0.92);
 }
 .swiper-slide-active {
   overflow: visible !important;
@@ -911,18 +912,21 @@ p {
   margin-top: 4px;
 }
 
-/* Archetype tags - styled but not buttons */
+/* Archetype tags - styled as tags */
 .sidebar-archetype-tags {
   display: flex;
-  flex-direction: column;
-  gap: 4px;
+  flex-wrap: wrap;
+  gap: 8px;
   margin-bottom: 16px;
   padding-bottom: 16px;
   border-bottom: 1px solid var(--gray-200);
 }
 .sidebar-archetype-tag {
+  background: var(--gray-100);
+  padding: 6px 12px;
+  border-radius: 4px;
   font-family: 'adobe-garamond-pro', Georgia, serif;
-  font-size: 14px;
+  font-size: 13px;
   font-style: italic;
   color: var(--charcoal);
 }
@@ -1051,6 +1055,10 @@ p {
 .sidebar-primary-button:hover {
   background: var(--yellow);
   color: var(--charcoal);
+}
+.sidebar-primary-button:link,
+.sidebar-primary-button:visited {
+  color: var(--white) !important;
 }
 
 /* ======================================================
