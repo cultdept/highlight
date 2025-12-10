@@ -1,5 +1,5 @@
 /* Highlight Travel Engine Styles */
-/* VERSION: 2025-12-10 v33 - Fixed tab widths, close button, clear all icon */
+/* VERSION: 2025-12-10 v34 - Clean category tabs after Webflow style reset */
 
 /* ======================================================
    FONTS REFERENCE
@@ -376,19 +376,17 @@ p {
   position: relative;
   background: transparent;
   border: none;
-  max-height: none;
-  overflow: visible;
   padding: 0 24px;
   margin-bottom: 24px;
-  /* Fixed height to prevent shifting when dropdowns open */
-  min-height: 44px;
 }
+
 /* Hide old drawer elements */
 .drawer-toggle-icon,
 .drawer-headers-container {
-  display: none !important;
+  display: none;
 }
-/* Clear all button - rotating icon positioned to the right of tabs */
+
+/* Clear all button - rotating icon */
 .drawer-clear-all {
   position: absolute;
   right: 24px;
@@ -420,18 +418,20 @@ p {
   stroke-linejoin: round;
   fill: none;
 }
+
+/* Main container for category tabs */
 .engine-criteria-boxes {
   display: flex;
   justify-content: center;
   gap: 8px;
-  padding: 0;
-  background: transparent;
-  position: relative;
 }
-/* Hide the flat criteria list - we'll show them in dropdowns */
+
+/* Hide the flat criteria list */
 .collection-list-wrapper-criteria {
   display: none;
 }
+
+/* Collection wrappers - transparent */
 .collection-list-wrapper-categories {
   display: contents;
 }
@@ -441,13 +441,14 @@ p {
   gap: 8px;
 }
 .collection-item-categories {
-  display: block;
+  display: contents;
 }
-/* Category as tab button */
+
+/* Category tab button */
 .engine-category {
   position: relative;
-  display: inline-block;
 }
+
 .engine-category-header {
   background: #f5f5f5;
   border: 1px solid #e0e0e0;
@@ -459,12 +460,9 @@ p {
   color: #333;
   cursor: pointer;
   transition: all 0.15s ease;
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  justify-content: center;
   gap: 8px;
-  text-align: center;
-  min-height: 44px;
   white-space: nowrap;
 }
 .engine-category-header:hover {
@@ -474,17 +472,18 @@ p {
 .engine-category.is-open .engine-category-header {
   background: white;
   border: 2px solid #111;
+  padding: 11px 15px; /* Compensate for thicker border */
 }
+
 .category-header-left {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  justify-content: center;
   gap: 8px;
 }
 .engine-category-header-text {
   white-space: nowrap;
 }
-/* Badge count - larger */
+/* Badge count */
 .category-active-count {
   background: #f5e104;
   color: #111;
@@ -512,16 +511,16 @@ p {
   100% { transform: scale(1); }
 }
 
-/* Category dropdown panel - auto width */
+/* Category dropdown panel */
 .engine-category-body {
   display: none;
   position: absolute;
-  top: calc(100% + 8px);
+  top: calc(100% + 12px);
   left: 50%;
   transform: translateX(-50%);
   background: white;
   border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.15);
   padding: 20px 24px;
   min-width: 320px;
   width: max-content;
@@ -544,6 +543,7 @@ p {
     transform: translateX(-50%) translateY(0);
   }
 }
+
 /* Arrow pointer on dropdown */
 .engine-category-body::before {
   content: '';
@@ -555,39 +555,46 @@ p {
   height: 12px;
   background: white;
   border-radius: 2px;
-  box-shadow: -2px -2px 4px rgba(0,0,0,0.04);
 }
-/* Panel header - close button in upper right */
+
+/* Panel header */
 .category-panel-header {
-  display: block;
-  margin-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   padding-bottom: 12px;
-  border-bottom: 1px solid #f0f0f0;
-  position: relative;
+  border-bottom: 1px solid #eee;
+  margin-bottom: 4px;
 }
 .category-panel-title {
   font-family: 'Inter', sans-serif;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 700;
   color: #111;
 }
+
+/* Close button - upper right */
 .category-panel-close {
-  position: absolute;
-  top: -12px;
-  right: -12px;
-  background: none;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f5f5f5;
   border: none;
-  font-size: 20px;
-  color: #999;
+  border-radius: 50%;
+  font-size: 14px;
+  color: #666;
   cursor: pointer;
-  padding: 4px 8px;
+  transition: all 0.15s ease;
   line-height: 1;
-  transition: color 0.15s ease;
 }
 .category-panel-close:hover {
+  background: #eee;
   color: #333;
 }
-/* Category clear button - lower right */
+
+/* Category clear button - bottom right */
 .category-clear {
   align-self: flex-end;
   background: none;
