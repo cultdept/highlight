@@ -1,5 +1,5 @@
 /* Highlight Travel Engine Styles */
-/* VERSION: 2025-12-10 v42 - Sidebar layout, white sidebar, charcoal footer */
+/* VERSION: 2025-12-10 v43 - Sidebar layout, white sidebar, charcoal footer */
 
 /* ======================================================
    CSS VARIABLES
@@ -75,6 +75,85 @@ a, a:visited, a:active, a:focus {
 p {
   margin-top: 0;
   margin-bottom: 1.5em;
+}
+
+/* ======================================================
+   HEADER
+   ====================================================== */
+.engine-header {
+  background: var(--white);
+  border-bottom: 1px solid var(--gray-200);
+  padding: 0 40px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+}
+
+.header-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-logo img {
+  height: 28px;
+  width: auto;
+}
+
+.header-nav {
+  display: flex;
+  gap: 32px;
+}
+
+.header-nav-link {
+  font-family: 'adobe-garamond-pro', Georgia, serif;
+  font-size: 14px;
+  font-style: italic;
+  color: var(--gray-500);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+.header-nav-link:hover {
+  color: var(--charcoal);
+}
+.header-nav-link.is-active,
+.header-nav-link.w--current {
+  color: var(--charcoal);
+}
+
+.header-actions {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.header-map-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: 1px solid var(--gray-300);
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-family: 'adobe-garamond-pro', Georgia, serif;
+  font-size: 13px;
+  font-style: italic;
+  color: var(--charcoal);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-decoration: none;
+}
+.header-map-btn:hover {
+  background: var(--charcoal);
+  border-color: var(--charcoal);
+  color: var(--white);
+}
+.header-map-btn svg {
+  width: 16px;
+  height: 16px;
 }
 
 /* ======================================================
