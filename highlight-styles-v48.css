@@ -1,5 +1,5 @@
 /* Highlight Travel Engine Styles */
-/* VERSION: 2025-12-10 v47 - Footer class fix, yellow back, lighter font weight */
+/* VERSION: 2025-12-10 v48 - Footer layout, lighter New Spirit */
 
 /* ======================================================
    CSS VARIABLES
@@ -1203,15 +1203,20 @@ p {
   border-top: 1px solid var(--charcoal-light);
 }
 
-.footer-stats {
-  display: flex !important;
-  gap: 48px !important;
-  justify-content: flex-start !important;
-}
+/* Group stats together on the left */
 .footer-stat {
   display: flex !important;
   align-items: baseline !important;
   gap: 8px !important;
+  margin-right: 40px !important;
+}
+.footer-stat:last-of-type {
+  margin-right: 0 !important;
+}
+
+/* Push view toggle to far right */
+.footer-view-toggle {
+  margin-left: auto !important;
 }
 .footer-number,
 .footer-stat-number,
@@ -1219,7 +1224,7 @@ p {
 .footer-content .footer-number {
   font-family: 'new-spirit', Georgia, serif !important;
   font-size: 28px !important;
-  font-weight: 600 !important;
+  font-weight: 500 !important;
   color: var(--yellow) !important;
 }
 .footer-stat-label,
