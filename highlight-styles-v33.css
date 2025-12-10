@@ -1,5 +1,5 @@
 /* Highlight Travel Engine Styles */
-/* VERSION: 2025-12-10 v31 - UI refinements: larger badges, centered tabs, wider dropdowns */
+/* VERSION: 2025-12-10 v33 - Fixed tab widths, close button, clear all icon */
 
 /* ======================================================
    FONTS REFERENCE
@@ -388,30 +388,37 @@ p {
 .drawer-headers-container {
   display: none !important;
 }
-/* Clear all button - positioned to the right of tabs */
+/* Clear all button - rotating icon positioned to the right of tabs */
 .drawer-clear-all {
   position: absolute;
   right: 24px;
   top: 50%;
   transform: translateY(-50%);
-  background: none;
-  border: none;
-  color: #999;
-  font-family: 'Inter', sans-serif;
-  font-size: 12px;
-  font-weight: 500;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  padding: 8px 12px;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.2s ease, color 0.2s ease;
+  transition: opacity 0.3s ease, transform 0.2s ease;
 }
 .drawer-clear-all.has-filters {
   opacity: 1;
   pointer-events: auto;
 }
 .drawer-clear-all:hover {
-  color: #333;
+  transform: translateY(-50%) scale(1.1) rotate(90deg);
+}
+.drawer-clear-all svg {
+  width: 20px;
+  height: 20px;
+  stroke: #666;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
 }
 .engine-criteria-boxes {
   display: flex;
@@ -434,12 +441,12 @@ p {
   gap: 8px;
 }
 .collection-item-categories {
-  display: contents;
+  display: block;
 }
 /* Category as tab button */
 .engine-category {
   position: relative;
-  flex: 0 0 auto;
+  display: inline-block;
 }
 .engine-category-header {
   background: #f5f5f5;
@@ -452,7 +459,7 @@ p {
   color: #333;
   cursor: pointer;
   transition: all 0.15s ease;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
@@ -469,7 +476,7 @@ p {
   border: 2px solid #111;
 }
 .category-header-left {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
@@ -552,10 +559,10 @@ p {
 }
 /* Panel header - close button in upper right */
 .category-panel-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 8px;
+  display: block;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f0f0f0;
   position: relative;
 }
 .category-panel-title {
@@ -566,7 +573,7 @@ p {
 }
 .category-panel-close {
   position: absolute;
-  top: -8px;
+  top: -12px;
   right: -12px;
   background: none;
   border: none;
