@@ -1,5 +1,5 @@
 /* Highlight Travel Engine Styles */
-/* VERSION: 2025-12-10 v34 - Clean category tabs after Webflow style reset */
+/* VERSION: 2025-12-10 v35 - Badge overlay, close/clear icons, z-index fix */
 
 /* ======================================================
    FONTS REFERENCE
@@ -462,8 +462,9 @@ p {
   transition: all 0.15s ease;
   display: flex;
   align-items: center;
-  gap: 8px;
+  justify-content: center;
   white-space: nowrap;
+  position: relative;
 }
 .engine-category-header:hover {
   background: white;
@@ -478,26 +479,30 @@ p {
 .category-header-left {
   display: flex;
   align-items: center;
-  gap: 8px;
 }
 .engine-category-header-text {
   white-space: nowrap;
 }
-/* Badge count */
+
+/* Badge count - absolutely positioned so it doesn't affect centering */
 .category-active-count {
+  position: absolute;
+  top: -8px;
+  right: -8px;
   background: #f5e104;
   color: #111;
   font-size: 11px;
   font-weight: 700;
-  min-width: 22px;
-  height: 22px;
-  border-radius: 50%;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
   opacity: 0;
   transition: opacity 0.2s ease, transform 0.3s ease;
-  flex-shrink: 0;
+  z-index: 5;
 }
 .category-active-count.has-active {
   opacity: 1;
@@ -521,7 +526,7 @@ p {
   background: white;
   border-radius: 12px;
   box-shadow: 0 8px 32px rgba(0,0,0,0.15);
-  padding: 20px 24px;
+  padding: 24px;
   min-width: 320px;
   width: max-content;
   max-width: 500px;
@@ -557,14 +562,35 @@ p {
   border-radius: 2px;
 }
 
-/* Panel header */
-.category-panel-header {
+/* Close button - absolute top right of dropdown */
+.category-panel-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 20px;
+  height: 20px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  font-size: 16px;
+  color: #999;
+  cursor: pointer;
+  transition: color 0.15s ease;
+  line-height: 1;
+  z-index: 5;
+}
+.category-panel-close:hover {
+  color: #333;
+}
+
+/* Panel header - just title now */
+.category-panel-header {
   padding-bottom: 12px;
   border-bottom: 1px solid #eee;
   margin-bottom: 4px;
+  padding-right: 24px; /* Space for close button */
 }
 .category-panel-title {
   font-family: 'Inter', sans-serif;
@@ -573,49 +599,40 @@ p {
   color: #111;
 }
 
-/* Close button - upper right */
-.category-panel-close {
-  width: 24px;
-  height: 24px;
+/* Category clear button - icon version, bottom right */
+.category-clear {
+  align-self: flex-end;
+  width: 18px;
+  height: 18px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f5f5f5;
-  border: none;
-  border-radius: 50%;
-  font-size: 14px;
-  color: #666;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  line-height: 1;
-}
-.category-panel-close:hover {
-  background: #eee;
-  color: #333;
-}
-
-/* Category clear button - bottom right */
-.category-clear {
-  align-self: flex-end;
   background: none;
   border: none;
-  color: #999;
-  font-family: 'Inter', sans-serif;
-  font-size: 11px;
-  font-weight: 500;
   cursor: pointer;
-  padding: 4px 0;
   margin-top: 8px;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.2s ease, color 0.15s ease;
+  transition: opacity 0.2s ease, transform 0.2s ease;
 }
 .category-clear.has-active {
   opacity: 1;
   pointer-events: auto;
 }
 .category-clear:hover {
-  color: #333;
+  transform: scale(1.1) rotate(90deg);
+}
+.category-clear svg {
+  width: 16px;
+  height: 16px;
+  stroke: #999;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+}
+.category-clear:hover svg {
+  stroke: #666;
 }
 
 /* Subcategory groups */
@@ -695,7 +712,7 @@ p {
    ====================================================== */
 .swiper-button-next,
 .swiper-button-prev {
-  z-index: 10000;
+  z-index: 100;
   color: white !important;
   cursor: pointer;
   background: #111 !important;
