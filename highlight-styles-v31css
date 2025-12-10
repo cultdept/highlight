@@ -1,5 +1,5 @@
 /* Highlight Travel Engine Styles */
-/* VERSION: 2025-12-10 v30 - Major redesign: new typography, dark presets, category tabs */
+/* VERSION: 2025-12-10 v31 - UI refinements: larger badges, centered tabs, wider dropdowns */
 
 /* ======================================================
    FONTS REFERENCE
@@ -65,7 +65,7 @@ p {
 .engine-question {
   font-family: 'new-spirit', Georgia, serif !important;
   font-weight: 500 !important;
-  font-size: 72px !important;
+  font-size: 80px !important;
   line-height: 1.1 !important;
   color: #111 !important;
   text-align: center;
@@ -165,14 +165,22 @@ p {
   font-weight: 900;
   line-height: 1.1;
   color: white;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
   text-align: center;
   position: relative;
-  padding-bottom: 0;
+  padding-bottom: 12px;
 }
-/* Remove the yellow underline from city names */
+/* Yellow underline between city and state */
 .slider-text::after {
-  display: none;
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 3px;
+  background: #f5e104;
+  border-radius: 2px;
 }
 
 /* State name - Swear Text */
@@ -301,10 +309,10 @@ p {
 }
 .slide-description-text {
   font-family: 'Inter', sans-serif;
-  font-size: 15px;
+  font-size: 13px;
   font-weight: 400;
-  line-height: 1.5;
-  color: #555;
+  line-height: 1.4;
+  color: #666;
 }
 
 /* ======================================================
@@ -372,33 +380,72 @@ p {
   overflow: visible;
   padding: 0 24px;
   margin-bottom: 24px;
+  /* Fixed height to prevent shifting when dropdowns open */
+  min-height: 44px;
 }
 /* Hide old drawer elements */
 .drawer-toggle-icon,
-.drawer-clear-all,
 .drawer-headers-container {
   display: none !important;
 }
+/* Clear all button - positioned to the right of tabs */
+.drawer-clear-all {
+  position: absolute;
+  right: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #999;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 8px 12px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, color 0.2s ease;
+}
+.drawer-clear-all.has-filters {
+  opacity: 1;
+  pointer-events: auto;
+}
+.drawer-clear-all:hover {
+  color: #333;
+}
 .engine-criteria-boxes {
-  display: grid;
-  grid-template-columns: repeat(8, 1fr);
+  display: flex;
+  justify-content: center;
   gap: 8px;
   padding: 0;
   background: transparent;
+  position: relative;
 }
 /* Hide the flat criteria list - we'll show them in dropdowns */
 .collection-list-wrapper-criteria {
   display: none;
 }
+.collection-list-wrapper-categories {
+  display: contents;
+}
+.collection-list-categories {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+.collection-item-categories {
+  display: contents;
+}
 /* Category as tab button */
 .engine-category {
   position: relative;
+  flex: 0 0 auto;
 }
 .engine-category-header {
   background: #f5f5f5;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
-  padding: 12px 8px;
+  padding: 12px 16px;
   font-family: 'Inter', sans-serif;
   font-size: 12px;
   font-weight: 600;
@@ -408,9 +455,10 @@ p {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 8px;
   text-align: center;
   min-height: 44px;
+  white-space: nowrap;
 }
 .engine-category-header:hover {
   background: white;
@@ -424,21 +472,19 @@ p {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 8px;
 }
 .engine-category-header-text {
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
-/* Badge count */
+/* Badge count - larger */
 .category-active-count {
   background: #f5e104;
   color: #111;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
-  min-width: 18px;
-  height: 18px;
+  min-width: 22px;
+  height: 22px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -459,7 +505,7 @@ p {
   100% { transform: scale(1); }
 }
 
-/* Category dropdown panel */
+/* Category dropdown panel - auto width */
 .engine-category-body {
   display: none;
   position: absolute;
@@ -470,8 +516,9 @@ p {
   border-radius: 12px;
   box-shadow: 0 8px 32px rgba(0,0,0,0.12);
   padding: 20px 24px;
-  min-width: 280px;
-  max-width: 320px;
+  min-width: 320px;
+  width: max-content;
+  max-width: 500px;
   z-index: 1000;
   flex-direction: column;
   gap: 16px;
@@ -503,14 +550,13 @@ p {
   border-radius: 2px;
   box-shadow: -2px -2px 4px rgba(0,0,0,0.04);
 }
-/* Panel header with close button */
+/* Panel header - close button in upper right */
 .category-panel-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding-bottom: 12px;
-  border-bottom: 1px solid #f0f0f0;
-  margin-bottom: 4px;
+  align-items: flex-start;
+  margin-bottom: 8px;
+  position: relative;
 }
 .category-panel-title {
   font-family: 'Inter', sans-serif;
@@ -519,15 +565,42 @@ p {
   color: #111;
 }
 .category-panel-close {
+  position: absolute;
+  top: -8px;
+  right: -12px;
   background: none;
   border: none;
-  font-size: 18px;
+  font-size: 20px;
   color: #999;
   cursor: pointer;
-  padding: 2px 6px;
+  padding: 4px 8px;
   line-height: 1;
+  transition: color 0.15s ease;
 }
 .category-panel-close:hover {
+  color: #333;
+}
+/* Category clear button - lower right */
+.category-clear {
+  align-self: flex-end;
+  background: none;
+  border: none;
+  color: #999;
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 4px 0;
+  margin-top: 8px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, color 0.15s ease;
+}
+.category-clear.has-active {
+  opacity: 1;
+  pointer-events: auto;
+}
+.category-clear:hover {
   color: #333;
 }
 
@@ -543,7 +616,7 @@ p {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: #999;
+  color: #666;
 }
 .subcategory-pills {
   display: flex;
