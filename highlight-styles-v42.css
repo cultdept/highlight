@@ -1,5 +1,5 @@
 /* Highlight Travel Engine Styles */
-/* VERSION: 2025-12-10 v41 - Sidebar layout, white sidebar, charcoal footer */
+/* VERSION: 2025-12-10 v42 - Sidebar layout, white sidebar, charcoal footer */
 
 /* ======================================================
    CSS VARIABLES
@@ -866,6 +866,19 @@ p {
   display: flex;
   flex-direction: column;
   gap: 0;
+}
+
+/* Hide all sidebar content by default */
+.engine-sidebar > *,
+.engine-sidebar .sidebar-content-wrapper {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* Show sidebar content when criteria are active */
+.engine-sidebar.has-content > *,
+.engine-sidebar.has-content .sidebar-content-wrapper {
+  opacity: 1;
 }
 
 .sidebar-eyebrow {
