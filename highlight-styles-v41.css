@@ -1,5 +1,5 @@
 /* Highlight Travel Engine Styles */
-/* VERSION: 2025-12-10 v40 - Sidebar layout, white sidebar, charcoal footer */
+/* VERSION: 2025-12-10 v41 - Sidebar layout, white sidebar, charcoal footer */
 
 /* ======================================================
    CSS VARIABLES
@@ -912,14 +912,25 @@ p {
   margin-top: 4px;
 }
 
-/* Archetype tags - styled as tags */
+/* Archetype section with label */
+.sidebar-archetype-section {
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--gray-200);
+}
+.sidebar-archetype-label {
+  font-family: 'adobe-garamond-pro', Georgia, serif;
+  font-size: 11px;
+  font-style: italic;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--gray-400);
+  margin-bottom: 8px;
+}
 .sidebar-archetype-tags {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-bottom: 16px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid var(--gray-200);
 }
 .sidebar-archetype-tag {
   background: var(--gray-100);
