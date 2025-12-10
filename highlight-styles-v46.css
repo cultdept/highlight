@@ -1131,13 +1131,13 @@ p {
 .sidebar-primary-button {
   display: block;
   width: 100%;
-  background: var(--charcoal);
-  color: var(--white);
+  background: var(--charcoal) !important;
+  color: var(--white) !important;
   font-family: 'Inter', sans-serif;
   font-size: 14px;
   font-weight: 600;
   text-align: center;
-  text-decoration: none;
+  text-decoration: none !important;
   padding: 14px 24px;
   border-radius: 4px;
   transition: all 0.15s ease;
@@ -1150,7 +1150,7 @@ p {
 }
 .sidebar-primary-button:link,
 .sidebar-primary-button:visited {
-  color: var(--white);
+  color: var(--white) !important;
 }
 .sidebar-primary-button:link:hover,
 .sidebar-primary-button:visited:hover {
@@ -1204,62 +1204,71 @@ p {
 }
 
 .footer-stats {
-  display: flex;
-  gap: 48px;
-  justify-content: flex-start;
+  display: flex !important;
+  gap: 48px !important;
+  justify-content: flex-start !important;
 }
 .footer-stat {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
+  display: flex !important;
+  align-items: baseline !important;
+  gap: 8px !important;
 }
-.footer-stat-number {
+.footer-stat-number,
+.engine-footer-drawer .footer-stat-number,
+.footer-content .footer-stat-number {
   font-family: 'new-spirit', Georgia, serif !important;
   font-size: 28px !important;
   font-weight: 600 !important;
   color: var(--amber) !important;
 }
-.footer-stat-label {
-  font-family: 'adobe-garamond-pro', Georgia, serif;
-  font-size: 12px;
-  font-style: italic;
-  color: var(--gray-500);
+.footer-stat-label,
+.engine-footer-drawer .footer-stat-label,
+.footer-content .footer-stat-label {
+  font-family: 'adobe-garamond-pro', Georgia, serif !important;
+  font-size: 12px !important;
+  font-style: italic !important;
+  color: var(--gray-500) !important;
 }
 
-/* View toggle - segment control style */
+/* View toggle - with separators and clear active state */
 .footer-view-toggle {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  background: var(--charcoal);
-  padding: 4px;
-  border-radius: 6px;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0 !important;
+  background: transparent !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
 }
 .footer-view-label {
-  font-family: 'adobe-garamond-pro', Georgia, serif;
-  font-size: 13px;
-  font-style: italic;
-  color: var(--gray-500);
-  margin-right: 12px;
+  font-family: 'adobe-garamond-pro', Georgia, serif !important;
+  font-size: 13px !important;
+  font-style: italic !important;
+  color: var(--gray-500) !important;
+  margin-right: 16px !important;
 }
 .footer-view-link {
-  font-family: 'adobe-garamond-pro', Georgia, serif;
-  font-size: 13px;
-  font-style: italic;
-  color: var(--gray-400);
+  font-family: 'adobe-garamond-pro', Georgia, serif !important;
+  font-size: 13px !important;
+  font-style: italic !important;
+  color: var(--gray-400) !important;
   text-decoration: none !important;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  padding: 6px 14px;
-  border-radius: 4px;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+  padding: 6px 16px !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  border-left: 1px solid var(--charcoal-light) !important;
+}
+.footer-view-link:first-of-type {
+  border-left: none !important;
 }
 .footer-view-link:hover {
   color: var(--white) !important;
-  background: var(--charcoal-light);
+  background: transparent !important;
 }
 .footer-view-link.is-active {
-  color: var(--charcoal) !important;
-  background: var(--amber);
+  color: var(--amber) !important;
+  background: transparent !important;
 }
 
 /* ======================================================
